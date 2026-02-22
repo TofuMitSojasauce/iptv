@@ -21,7 +21,7 @@
   </style>
 </head>
 <body>
-  <video id="player"></video>
+  <video id="player" autoplay ></video>
   <p id="status">Buffering...</p>
   <script>
     const STREAM_URL = "https://tv.smoms.me/iptv/channel/1.ts";
@@ -35,19 +35,7 @@
       player.attachMediaElement(video);
       player.load();
 
-      // Wait until we have enough buffered data before playing
-      video.addEventListener("progress", function onProgress() {
-        const buffered = video.buffered;
-        if (buffered.length > 0) {
-          const bufferedSeconds = buffered.end(0) - buffered.start(0);
-          status.textContent = `Buffering... ${Math.min(Math.round(bufferedSeconds), BUFFER_SECONDS)}s / ${BUFFER_SECONDS}s`;
-          if (bufferedSeconds >= BUFFER_SECONDS) {
-            video.removeEventListener("progress", onProgress);
-            status.textContent = "● LIVE";
-            video.play();
-          }
-        }
-      });
+      //video.play();
     }
   </script>
 </body>
