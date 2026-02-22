@@ -19,19 +19,16 @@
     h1 { margin-bottom: 1rem; font-size: 1rem; letter-spacing: 0.2em; color: #ff4444; text-transform: uppercase; }
     video {
       width: 100%;
-      max-width: 900px;
+      /* max-width: 900px; */
       aspect-ratio: 16/9;
       background: #000;
-      border: 1px solid #333;
+      /* border: 1px solid #333; */
     }
     p { margin-top: 0.75rem; font-size: 0.75rem; color: #555; }
   </style>
 </head>
 <body>
-  <h1>📺 Filmöö</h1>
   <video id="player" controls autoplay muted></video>
-  <p id="status">Loading stream...</p>
-
   <script>
     const STREAM_URL = "https://tv.smoms.me/iptv/channel/1.ts";
 
