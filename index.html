@@ -16,37 +16,38 @@
       font-family: 'Courier New', monospace;
       color: #e0e0e0;
     }
-    h1 { margin-bottom: 1rem; font-size: 1rem; letter-spacing: 0.2em; color: #ff4444; text-transform: uppercase; }
-    video {
-      width: 100%;
-      /* max-width: 900px; */
-      aspect-ratio: 16/9;
-      background: #000;
-      /* border: 1px solid #333; */
-    }
-    p { margin-top: 0.75rem; font-size: 0.75rem; color: #555; }
+    video { width: 100%; aspect-ratio: 16/9; background: #000; }
+    #status { margin-top: 0.75rem; font-size: 0.75rem; color: #555; }
   </style>
 </head>
 <body>
-  <video id="player" controls autoplay muted></video>
+  <video id="player"></video>
+  <p id="status">Buffering...</p>
   <script>
     const STREAM_URL = "https://tv.smoms.me/iptv/channel/1.ts";
+    const BUFFER_SECONDS = 10; 
 
     const video = document.getElementById("player");
     const status = document.getElementById("status");
 
     if (mpegts.isSupported()) {
-      const player = mpegts.createPlayer({
-        type: "mpegts",
-        isLive: true,
-        url: STREAM_URL
-      });
+      const player = mpegts.createPlayer({ type: "mpegts", isLive: true, url: STREAM_URL });
       player.attachMediaElement(video);
       player.load();
-      player.play();
-      status.textContent = "Stream loaded ✓";
-    } else {
-      status.textContent = "mpegts.js not supported in this browser.";
+
+      // Wait until we have enough buffered data before playing
+      video.addEventListener("progress", function onProgress() {
+        const buffered = video.buffered;
+        if (buffered.length > 0) {
+          const bufferedSeconds = buffered.end(0) - buffered.start(0);
+          status.textContent = `Buffering... ${Math.min(Math.round(bufferedSeconds), BUFFER_SECONDS)}s / ${BUFFER_SECONDS}s`;
+          if (bufferedSeconds >= BUFFER_SECONDS) {
+            video.removeEventListener("progress", onProgress);
+            status.textContent = "● LIVE";
+            video.play();
+          }
+        }
+      });
     }
   </script>
 </body>
