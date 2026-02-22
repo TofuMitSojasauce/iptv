@@ -7,35 +7,114 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      background: #0a0a0a;
+      background: #f6f6f8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .wrapper {
+      position: relative;
+      width: 80vw;
+      aspect-ratio: 16/9;
+    }
+
+    video {
+      width: 85%;
+      height: 85%;
+      background: #000;
+      display: block;
+    }
+
+    #tv {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      inset: 0;
+      background: #00000000;
+      display: flex;
+      /*flex-direction: column;
+      align-items: center;
+      justify-content: center;*/
+      cursor: pointer;
+      gap: 16px;
+    }
+
+    #overlay {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      inset: 0;
+      background: #00000000;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      /* min-height: 100vh;*/
-      font-family: 'Courier New', monospace;
-      color: #e0e0e0;
+      cursor: pointer;
+      gap: 16px;
     }
-    video { width: 100%; aspect-ratio: 16/9; background: #000; }
-    #status { margin-top: 0.75rem; font-size: 0.75rem; color: #555; }
+
+    #overlay .play-btn {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #overlay .play-btn::after {
+      content: '';
+      border-style: solid;
+      border-width: 12px 0 12px 22px;
+      border-color: transparent transparent transparent #fff;
+      margin-left: 4px;
+    }
+
+    #overlay p {
+      color: #555;
+      font-family: 'Courier New', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+    }
   </style>
 </head>
 <body>
-  <video id="player" autoplay ></video>
-  <p id="status">Buffering...</p>
+  <div class="wrapper">
+    <video id="player" muted></video>
+    <img id="tv" width=100% src="crt cut.png" alt="crt">
+    <!-- <div id="overlay">
+      <div class="play-btn"></div>
+      <p>drück für ton</p>
+    </div> -->
+  </div>
+
   <script>
     const STREAM_URL = "https://tv.smoms.me/iptv/channel/1.ts";
-    const BUFFER_SECONDS = 10; 
-
     const video = document.getElementById("player");
-    const status = document.getElementById("status");
+    const overlay = document.getElementById("overlay");
 
     if (mpegts.isSupported()) {
       const player = mpegts.createPlayer({ type: "mpegts", isLive: true, url: STREAM_URL });
       player.attachMediaElement(video);
       player.load();
+      video.play();
+      /* overlay.addEventListener("click", () => {
+        overlay.style.display = "none";
+        
+      });*/
 
-      //video.play();
+      tv.addEventListener("click", () => {
+        video.muted = !video.muted 
+      });
+
+      document.addEventListener("keydown", (e) => {
+      if (e.key === "f" || e.key === "F") {
+        video.requestFullscreen();
+      }
+    });
     }
   </script>
 </body>
